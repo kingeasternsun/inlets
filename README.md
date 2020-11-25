@@ -1,0 +1,10 @@
+
+fork from https://github.com/inlets/inlets
+基于 https://github.com/inlets/inlets 修改而来，主要增加对多个下游 client 的支持。
+
+
+- 下游client通过ws连接到server后，server会为该ws链接分配一个clientID和一个Client结构，Client中包含一个数据chanel用于接收发往该client的http请求数据。
+- 每个ws链接上，一个goroutine负责从Client的channel上等待用户的http请求，然后通过ws链接下发到下游；另外一个goroutine负责从ws链接上接收下游的响应数据，然后
+根据响应数据中的 InletsHeader 找到接收该响应的bus中的channel，从而将响应回传回当前server的httphandler中。
+- 当前server在接收http请求时候，根据head中的clientID找到对应的Client的数据通道，将数据发出去。为了让数据回来的时候能够接收到，所以要为当前的请求生成一个唯一的
+InletsID和对应的数据接收channerl,将InletsID放入到InletsHeader中，然后等待channel上的数据返回。

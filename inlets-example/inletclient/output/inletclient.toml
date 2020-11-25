@@ -1,0 +1,4 @@
+HTTPListenAddr = "28814"
+InletRegisterURL = "http://127.0.0.1:28815/inlet/register"
+Token = ""
+ReConnectionDur = 1
